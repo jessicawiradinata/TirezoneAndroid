@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">TireZone</string>
+
+    <string-array name="vehicle_list">
+        <item></item>
+        <item>Audi A4</item>
+        <item>Audi Q5</item>
+        <item>Honda Accord</item>
+        <item>Honda Civic</item>
+        <item>Mazda CX-5</item>
+        <item>Toyota Camry</item>
+    </string-array>
+
+    <string-array name="tire_list">
+        <item>CHAMPIRO 50</item>
+        <item>CHAMPIRO BAX 2</item>
+        <item>CHAMPIRO BXT</item>
+        <item>CHAMPIRO ECO</item>
+    </string-array>
+
+    <string-array name="size_list">
+        <item>235/60 R16</item>
+        <item>215/60 R16</item>
+        <item>205/65 R15</item>
+        <item>235/40 R18 XL</item>
+        <item>225/45 R17 XL</item>
+    </string-array>
+
+    <string-array name="test_list">
+        <item>ITEM 1</item>
+    </string-array>
+</resources>

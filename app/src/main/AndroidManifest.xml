@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="id.co.tirezone.tirezonemobile">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/tirezone_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:name=".FireApp">
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:label="Profile">
+        </activity>
+        <activity
+            android:name=".MyStoreActivity"
+            android:label="My Store">
+        </activity>
+        <activity
+            android:name=".AddProductActivity"
+            android:label="Add Product">
+        </activity>
+        <activity
+            android:name=".ProductDetailsActivity"
+            android:label="Product Details">
+        </activity>
+        <activity
+            android:name=".SalesActivity"
+            android:label="Sales">
+        </activity>
+        <activity
+            android:name=".TransactionDetailsActivity"
+            android:label="Transaction Details" />
+        <activity
+            android:name=".CustomersActivity"
+            android:label="Customers">
+        </activity>
+        <activity
+            android:name=".AddCustomerActivity"
+            android:label="Add Customer" />
+        <activity
+            android:name=".CustomerDetailsActivity"
+            android:label="Customer Details" />
+        <activity
+            android:name=".TransactionActivity1"
+            android:label="New Transaction">
+        </activity>
+        <activity
+            android:name=".TransactionActivity2"
+            android:label="New Transaction">
+        </activity>
+        <activity
+            android:name=".TransactionActivity3"
+            android:label="New Transaction">
+        </activity>
+        <activity
+            android:name=".TransactionActivity4"
+            android:label="New Transaction">
+        </activity>
+    </application>
+
+</manifest>

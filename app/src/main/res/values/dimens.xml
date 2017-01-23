@@ -1,0 +1,12 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="standard_text_size">16sp</dimen>
+    <dimen name="profile_text_width">100dp</dimen>
+    <dimen name="profile_field_width">250dp</dimen>
+    <dimen name="form_vertical_margin">10dp</dimen>
+    <dimen name="details_vertical_margin">5dp</dimen>
+    <dimen name="details_horizontal_width">140dp</dimen>
+    <dimen name="add_customer_text_width">100dp</dimen>
+</resources>
