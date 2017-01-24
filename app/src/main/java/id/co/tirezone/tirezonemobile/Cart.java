@@ -33,6 +33,10 @@ public class Cart implements Parcelable {
         in.readList(items, getClass().getClassLoader());
     }
 
+    public int getCartSize() {
+        return items.size();
+    }
+
     @Override
     public int describeContents() {
         return 0;

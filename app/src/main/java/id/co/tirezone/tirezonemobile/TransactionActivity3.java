@@ -43,6 +43,7 @@ public class TransactionActivity3 extends AppCompatActivity {
     private final HashMap<String, String> tireMap = new HashMap<String, String>();
     private List<Item> items = new ArrayList<>();
     private int totalPrice;
+    private String customerKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,10 @@ public class TransactionActivity3 extends AppCompatActivity {
         setupTireSpinner();
         setupNextButton();
         setupAddButton(adapter);
+
+        Bundle bundle = getIntent().getExtras();
+        customerKey = bundle.getString("customerKey");
+        Log.v("CUSTOMER KEY ", customerKey);
     }
 
     @Override
@@ -163,7 +168,11 @@ public class TransactionActivity3 extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TransactionActivity3.this, TransactionActivity4.class));
+                Intent intent = new Intent(TransactionActivity3.this, TransactionActivity4.class);
+                intent.putExtra("customerKey", customerKey);
+                Cart mCart = new Cart(items);
+                intent.putExtra("cart", mCart);
+                startActivity(intent);
             }
         });
     }
