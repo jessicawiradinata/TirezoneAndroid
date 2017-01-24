@@ -181,10 +181,11 @@ public class TransactionActivity3 extends AppCompatActivity {
                 final String size = sizeSpinner.getSelectedItem().toString();
                 final int qty = Integer.parseInt(qtyField.getText().toString());
                 final int price = Integer.parseInt(priceField.getText().toString());
-                Item newItem = new Item(tire, size, qty, price);
+                final int subTotal = price * qty;
+                Item newItem = new Item(tire, size, qty, subTotal);
                 adapter.insert(items.size(), newItem);
                 Log.v("CHECK ARRAY ", Integer.toString(items.size()));
-                totalPrice += price;
+                totalPrice += subTotal;
                 totalPriceField.setText("Rp " + Integer.toString(totalPrice));
             }
         });
