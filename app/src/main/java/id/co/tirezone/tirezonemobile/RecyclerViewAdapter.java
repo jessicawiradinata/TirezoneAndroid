@@ -3,6 +3,8 @@ package id.co.tirezone.tirezonemobile;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -104,11 +106,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
                     Log.v("NEW QTY ", Integer.toString(list.get(position).getQty()));
                 }
                 if(!price.equals("")) {
-                    int priceInt = Integer.parseInt(price);
+                    int priceInt = Integer.parseInt(price) * list.get(position).getQty();
                     list.get(position).setPrice(priceInt);
                     Log.v("NEW PRICE ", Integer.toString(list.get(position).getPrice()));
                 }
                 notifyDataSetChanged();
+                int newPrice = list.get(position).getPrice();
+                int newQty = list.get(position).getQty();
+                sendLocalBroadcast(newPrice, newQty);
             }
         });
 
@@ -122,5 +127,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
         alertDialog.setView(layout);
         alertDialog.create();
         alertDialog.show();
+    }
+
+    private void sendLocalBroadcast(int price, int quantity) {
+        int subTotal = price * quantity;
+        Intent intent = new Intent("SubtotalService");
+        intent.putExtra("subTotal", subTotal);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
