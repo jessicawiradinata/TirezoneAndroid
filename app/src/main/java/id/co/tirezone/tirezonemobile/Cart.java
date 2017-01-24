@@ -12,12 +12,15 @@ import java.util.List;
 
 public class Cart implements Parcelable {
     private List<Item> items = new ArrayList<Item>();
+    int totalprice;
+
 
     public Cart() {
     }
 
-    public Cart(List<Item> items) {
+    public Cart(List<Item> items, int totalPrice) {
         this.items = items;
+        this.totalprice = totalPrice;
     }
 
     public List<Item> getItems() {
@@ -28,9 +31,18 @@ public class Cart implements Parcelable {
         this.items = items;
     }
 
+    public int getTotalPrice() {
+        return totalprice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalprice = totalPrice;
+    }
+
     public Cart(Parcel in) {
         items = new ArrayList<Item>();
         in.readList(items, getClass().getClassLoader());
+        totalprice = in.readInt();
     }
 
     public int getCartSize() {
@@ -45,6 +57,7 @@ public class Cart implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(items);
+        dest.writeInt(totalprice);
     }
 
     public static final Parcelable.Creator<Cart> CREATOR = new Parcelable.Creator<Cart>() {

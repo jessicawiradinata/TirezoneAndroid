@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,11 +45,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
         holder.qty.setText("Qty " + Integer.toString(list.get(position).getQty()));
         holder.price.setText("Rp " + Integer.toString(list.get(position).getPrice()));
 
-
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //setupAlertDialog(position);
+                setupAlertDialog(position);
             }
         });
     }
@@ -75,12 +75,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
     }
 
     private void setupAlertDialog(final int position) {
-        Activity activity = (Activity) context;
-        activity.setTheme(R.style.AppTheme);
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setCancelable(true);
 
-        /*Context mContext = alertDialog.getContext();
+        Context mContext = alertDialog.getContext();
         LinearLayout layout = new LinearLayout(mContext);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50,50,50,0);
@@ -93,21 +91,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
         final EditText priceField = new EditText(mContext);
         priceField.setHint("Price");
         priceField.setInputType(InputType.TYPE_CLASS_NUMBER);
-        layout.addView(priceField);*/
+        layout.addView(priceField);
 
         alertDialog.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                /*String quantity = qtyField.getText().toString();
+                String quantity = qtyField.getText().toString();
                 String price = priceField.getText().toString();
                 if(!quantity.equals("")) {
                     int qtyInt = Integer.parseInt(quantity);
                     list.get(position).setQty(qtyInt);
+                    Log.v("NEW QTY ", Integer.toString(list.get(position).getQty()));
                 }
                 if(!price.equals("")) {
                     int priceInt = Integer.parseInt(price);
                     list.get(position).setPrice(priceInt);
-                }*/
+                    Log.v("NEW PRICE ", Integer.toString(list.get(position).getPrice()));
+                }
+                notifyDataSetChanged();
             }
         });
 
@@ -118,7 +119,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
             }
         });
 
-        //alertDialog.setView(layout);
+        alertDialog.setView(layout);
         alertDialog.create();
         alertDialog.show();
     }

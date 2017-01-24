@@ -54,7 +54,8 @@ public class TransactionActivity3 extends AppCompatActivity {
         sizeSpinner = (Spinner) findViewById(R.id.size_spinner);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.sales_recyclerview);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(items, getApplication());
+        //RecyclerViewAdapter adapter = new RecyclerViewAdapter(items, getApplication());
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(items, TransactionActivity3.this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -170,8 +171,9 @@ public class TransactionActivity3 extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TransactionActivity3.this, TransactionActivity4.class);
                 intent.putExtra("customerKey", customerKey);
-                Cart mCart = new Cart(items);
+                Cart mCart = new Cart(items, totalPrice);
                 intent.putExtra("cart", mCart);
+                Log.v("TOTAL PRICE TO SUBMIT ", Integer.toString(mCart.getTotalPrice()));
                 startActivity(intent);
             }
         });
@@ -196,6 +198,7 @@ public class TransactionActivity3 extends AppCompatActivity {
                 Log.v("CHECK ARRAY ", Integer.toString(items.size()));
                 totalPrice += subTotal;
                 totalPriceField.setText("Rp " + Integer.toString(totalPrice));
+                Log.v("TOTAL PRICE ", Integer.toString(totalPrice));
             }
         });
     }
