@@ -45,7 +45,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
         holder.name.setText(list.get(position).getPattern());
         holder.size.setText(list.get(position).getSize());
         holder.qty.setText("Qty " + Integer.toString(list.get(position).getQty()));
-        holder.price.setText("Rp " + Integer.toString(list.get(position).getPrice()));
+        holder.price.setText("Rp " + Integer.toString(list.get(position).getSubtotal()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +77,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
     }
 
     private void setupAlertDialog(final int position) {
+        final int oldSubtotal = list.get(position).getSubtotal();
+
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setCancelable(true);
 
@@ -101,19 +103,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
                 String quantity = qtyField.getText().toString();
                 String price = priceField.getText().toString();
                 if(!quantity.equals("")) {
+                    int oldPrice = list.get(position).getSubtotal() / list.get(position).getQty();
                     int qtyInt = Integer.parseInt(quantity);
                     list.get(position).setQty(qtyInt);
                     Log.v("NEW QTY ", Integer.toString(list.get(position).getQty()));
+                    if(price.equals("")) {
+                        list.get(position).setSubtotal(qtyInt * oldPrice);
+                    }
                 }
                 if(!price.equals("")) {
-                    int priceInt = Integer.parseInt(price) * list.get(position).getQty();
-                    list.get(position).setPrice(priceInt);
-                    Log.v("NEW PRICE ", Integer.toString(list.get(position).getPrice()));
+                    if(quantity.equals("")) {
+                        int subtotalInt = Integer.parseInt(price) * list.get(position).getQty();
+                        list.get(position).setSubtotal(subtotalInt);
+                        Log.v("NEW SUBTOTAL ", Integer.toString(list.get(position).getSubtotal()));
+                    }
+                    else {
+                        int subtotalInt = Integer.parseInt(price) * Integer.parseInt(quantity);
+                        Log.v("SET PRICE ", price);
+                        Log.v("SET QUANTITY ", quantity);
+                        list.get(position).setSubtotal(subtotalInt);
+                        Log.v("SET SUBTOTAL ", Integer.toString(subtotalInt));
+                        Log.v("NEW SUBTOTAL 2 ", Integer.toString(list.get(position).getSubtotal()));
+                    }
                 }
                 notifyDataSetChanged();
-                int newPrice = list.get(position).getPrice();
-                int newQty = list.get(position).getQty();
-                sendLocalBroadcast(newPrice, newQty);
+                int newSubtotal = list.get(position).getSubtotal();
+                sendLocalBroadcast(newSubtotal, oldSubtotal);
             }
         });
 
@@ -129,8 +144,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
         alertDialog.show();
     }
 
-    private void sendLocalBroadcast(int price, int quantity) {
-        int subTotal = price * quantity;
+    private void sendLocalBroadcast(int newSubtotal, int oldSubtotal) {
+        int subTotal = newSubtotal - oldSubtotal;
+        Log.v("OLD SUBTOTAL ", Integer.toString(oldSubtotal));
+        Log.v("NEW SUBTOTAL ", Integer.toString(newSubtotal));
         Intent intent = new Intent("SubtotalService");
         intent.putExtra("subTotal", subTotal);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

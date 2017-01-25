@@ -11,23 +11,23 @@ public class Item implements Parcelable{
     private String pattern;
     private String size;
     private int qty;
-    private int price;
+    private int subtotal;
 
     public Item() {
     }
 
-    public Item(String pattern, String size, int qty, int price) {
+    public Item(String pattern, String size, int qty, int subtotal) {
         this.pattern = pattern;
         this.size = size;
         this.qty = qty;
-        this.price = price;
+        this.subtotal = subtotal;
     }
 
     public Item(Parcel in) {
         pattern = in.readString();
         size = in.readString();
         qty = in.readInt();
-        price = in.readInt();
+        subtotal = in.readInt();
     }
 
     public String getPattern() {
@@ -54,12 +54,12 @@ public class Item implements Parcelable{
         this.qty = qty;
     }
 
-    public int getPrice() {
-        return price;
+    public int getSubtotal() {
+        return subtotal;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setSubtotal(int subtotal) {
+        this.subtotal = subtotal;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class Item implements Parcelable{
         dest.writeString(pattern);
         dest.writeString(size);
         dest.writeInt(qty);
-        dest.writeInt(price);
+        dest.writeInt(subtotal);
     }
 
     public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {

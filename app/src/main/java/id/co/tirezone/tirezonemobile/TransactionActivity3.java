@@ -1,8 +1,11 @@
 package id.co.tirezone.tirezonemobile;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,6 +48,16 @@ public class TransactionActivity3 extends AppCompatActivity {
     private int totalPrice;
     private String customerKey;
 
+    private BroadcastReceiver serviceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            TextView totalPriceField = (TextView) findViewById(R.id.total_price);
+            int subTotal = intent.getExtras().getInt("subTotal");
+            totalPrice += subTotal;
+            totalPriceField.setText("Rp " + Integer.toString(totalPrice));
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +79,9 @@ public class TransactionActivity3 extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         customerKey = bundle.getString("customerKey");
         Log.v("CUSTOMER KEY ", customerKey);
+
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
+        bm.registerReceiver(serviceReceiver, new IntentFilter("SubtotalService"));
     }
 
     @Override

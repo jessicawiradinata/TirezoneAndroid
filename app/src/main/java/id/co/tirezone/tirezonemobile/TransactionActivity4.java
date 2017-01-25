@@ -102,7 +102,7 @@ public class TransactionActivity4 extends AppCompatActivity {
                     newSession2.child("pattern").setValue(item.getPattern());
                     newSession2.child("size").setValue(item.getSize());
                     newSession2.child("qty").setValue(item.getQty());
-                    newSession2.child("price").setValue(item.getPrice());
+                    newSession2.child("subtotal").setValue(item.getSubtotal());
                 }
 
 
