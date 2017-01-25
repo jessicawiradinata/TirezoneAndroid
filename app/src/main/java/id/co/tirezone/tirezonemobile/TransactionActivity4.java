@@ -1,5 +1,6 @@
 package id.co.tirezone.tirezonemobile;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +10,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class TransactionActivity4 extends AppCompatActivity {
     private String customerKey;
@@ -31,6 +36,7 @@ public class TransactionActivity4 extends AppCompatActivity {
 
         setReference();
         setupFinishButton();
+        setupDatePicker();
 
         Bundle bundle = getIntent().getExtras();
         customerKey = bundle.getString("customerKey");
@@ -117,5 +123,30 @@ public class TransactionActivity4 extends AppCompatActivity {
         notesField = (EditText) findViewById(R.id.notes);
         technicianField = (EditText) findViewById(R.id.technician);
         dateField = (EditText) findViewById(R.id.date);
+    }
+
+    private void setupDatePicker() {
+        dateField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar mCurrentDate = Calendar.getInstance();
+                int mYear = mCurrentDate.get(Calendar.YEAR);
+                int mMonth = mCurrentDate.get(Calendar.MONTH);
+                int mDay = mCurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog mDatePicker = new DatePickerDialog(TransactionActivity4.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        mCurrentDate.set(Calendar.YEAR, year);
+                        mCurrentDate.set(Calendar.MONTH, month);
+                        mCurrentDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        String dateFormat = "dd/MM/yyyy";
+                        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+                        dateField.setText(sdf.format(mCurrentDate.getTime()));
+                    }
+                }, mYear, mMonth, mDay);
+                mDatePicker.show();
+            }
+        });
     }
 }
