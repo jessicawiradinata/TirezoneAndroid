@@ -25,6 +25,8 @@ public class TransactionActivity4 extends AppCompatActivity {
     private String customerKey;
     private Cart mCart;
     private DatabaseReference dataRef;
+    private EditText invoiceNoField;
+    private EditText mileageField;
     private EditText notesField;
     private EditText technicianField;
     private EditText dateField;
@@ -89,11 +91,15 @@ public class TransactionActivity4 extends AppCompatActivity {
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String invoiceNo = invoiceNoField.getText().toString();
+                int mileage = Integer.parseInt(mileageField.getText().toString());
                 String notes = notesField.getText().toString();
                 String technician = technicianField.getText().toString();
                 String date = dateField.getText().toString();
 
                 DatabaseReference newSession = dataRef.push();
+                newSession.child("invoiceno").setValue(invoiceNo);
+                newSession.child("mileage").setValue(mileage);
                 newSession.child("customerkey").setValue(customerKey);
                 newSession.child("notes").setValue(notes);
                 newSession.child("technician").setValue(technician);
@@ -103,7 +109,7 @@ public class TransactionActivity4 extends AppCompatActivity {
                 newCart.child("totalprice").setValue(mCart.getTotalPrice());
                 String newCartKey = newCart.getKey();
                 DatabaseReference dataRef2 = newCart.child("items");
-                newSession.child("cart").setValue(newCartKey);
+                newSession.child("cartkey").setValue(newCartKey);
 
                 for(Item item: mCart.getItems()) {
                     DatabaseReference newSession2 = dataRef2.push();
@@ -123,6 +129,8 @@ public class TransactionActivity4 extends AppCompatActivity {
         notesField = (EditText) findViewById(R.id.notes);
         technicianField = (EditText) findViewById(R.id.technician);
         dateField = (EditText) findViewById(R.id.date);
+        invoiceNoField = (EditText) findViewById(R.id.invoice_no);
+        mileageField = (EditText) findViewById(R.id.mileage);
     }
 
     private void setupDatePicker() {
