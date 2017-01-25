@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
@@ -22,8 +23,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -40,11 +43,31 @@ public class SalesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales);
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(userId)
+                .child("sales");
+        mRecyclerView = (RecyclerView) findViewById(R.id.sales_recyclerview);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        FirebaseRecyclerAdapter<Sales, SalesViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Sales, SalesViewHolder>(
+                Sales.class,
+                R.layout.item_sales,
+                SalesViewHolder.class,
+                mDatabase
+        ) {
+            @Override
+            protected void populateViewHolder(SalesViewHolder viewHolder, Sales model, int position) {
+
+            }
+        };
+        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
     @Override
