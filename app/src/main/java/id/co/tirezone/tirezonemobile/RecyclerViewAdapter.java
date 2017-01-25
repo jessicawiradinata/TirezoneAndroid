@@ -132,10 +132,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                int subTotal = list.get(position).getSubtotal();
+                sendLocalBroadcast(0, subTotal);
+                list.remove(position);
+                notifyItemRemoved(position);
+                notifyDataSetChanged();
             }
         });
 
