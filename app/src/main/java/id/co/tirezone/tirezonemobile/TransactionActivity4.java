@@ -1,6 +1,7 @@
 package id.co.tirezone.tirezonemobile;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -76,7 +77,8 @@ public class TransactionActivity4 extends AppCompatActivity {
 
     private void setupFinishButton() {
         Button finishButton = (Button) findViewById(R.id.finish_button);
-        dataRef = FirebaseDatabase.getInstance().getReference().child("sales");
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        dataRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId).child("sales");
 
         finishButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,8 +106,6 @@ public class TransactionActivity4 extends AppCompatActivity {
                     newSession2.child("qty").setValue(item.getQty());
                     newSession2.child("subtotal").setValue(item.getSubtotal());
                 }
-
-
 
                 Toast.makeText(TransactionActivity4.this, "Transaction record submitted", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(TransactionActivity4.this, SalesActivity.class));
