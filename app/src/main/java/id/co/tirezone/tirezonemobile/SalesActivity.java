@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
 import android.view.Menu;
@@ -19,20 +20,31 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class SalesActivity extends AppCompatActivity {
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -76,6 +88,40 @@ public class SalesActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static class SalesViewHolder extends RecyclerView.ViewHolder {
+        View mView;
+        View detailButton;
+
+        public SalesViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+
+        public void setInvoiceNo(String num) {
+            TextView invoiceNo = (TextView) mView.findViewById(R.id.invoice_no);
+            invoiceNo.setText(num);
+        }
+
+        public void setDate(String theDate) {
+            TextView date = (TextView) mView.findViewById(R.id.date);
+            date.setText(theDate);
+        }
+
+        public void setPrice(String thePrice) {
+            TextView price = (TextView) mView.findViewById(R.id.price);
+            price.setText(thePrice);
+        }
+
+        public void setVehicleId(String id) {
+            TextView vehicleId = (TextView) mView.findViewById(R.id.vehicle_id);
+            vehicleId.setText(id);
+        }
+
+        public void setButton() {
+            detailButton = (View) mView.findViewById(R.id.item_sales);
+        }
     }
 
     private void setupDetailButton() {
