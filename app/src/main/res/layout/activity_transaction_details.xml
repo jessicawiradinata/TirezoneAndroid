@@ -176,11 +176,11 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/print_button"
+            android:id="@+id/next_button"
             style="?android:textAppearanceSmall"
-            android:layout_width="70dp"
+            android:layout_width="80dp"
             android:layout_height="30dp"
-            android:text="Print"
+            android:text="Next Page"
             android:textSize="9sp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"/>
