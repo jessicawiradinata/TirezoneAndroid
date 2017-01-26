@@ -25,28 +25,33 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Map;
 
 public class SalesActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private DatabaseReference mDatabase;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sales);
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(userId)
-                .child("sales");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(userId).child("sales");
         mRecyclerView = (RecyclerView) findViewById(R.id.sales_recyclerview);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -63,8 +68,39 @@ public class SalesActivity extends AppCompatActivity {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(SalesViewHolder viewHolder, Sales model, int position) {
+            protected void populateViewHolder(final SalesViewHolder viewHolder, Sales model, int position) {
+                viewHolder.setInvoiceNo(model.getInvoiceno());
+                viewHolder.setDate(model.getDate());
 
+                String cartKey = model.getCartkey();
+                DatabaseReference cartsRef = FirebaseDatabase.getInstance().getReference()
+                        .child("carts").child(cartKey).child("totalprice");
+                cartsRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        viewHolder.setPrice(dataSnapshot.getValue().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                String customerKey = model.getCustomerkey();
+                DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference()
+                        .child("users").child(userId).child("customers").child(customerKey).child("vehicleid");
+                customerRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        viewHolder.setVehicleId(dataSnapshot.getValue().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         };
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
@@ -123,7 +159,7 @@ public class SalesActivity extends AppCompatActivity {
         }
 
         public void setInvoiceNo(String num) {
-            TextView invoiceNo = (TextView) mView.findViewById(R.id.invoice_no);
+            TextView invoiceNo = (TextView) mView.findViewById(R.id.invoice_id);
             invoiceNo.setText(num);
         }
 
@@ -134,7 +170,7 @@ public class SalesActivity extends AppCompatActivity {
 
         public void setPrice(String thePrice) {
             TextView price = (TextView) mView.findViewById(R.id.price);
-            price.setText(thePrice);
+            price.setText("Rp " + thePrice);
         }
 
         public void setVehicleId(String id) {
@@ -221,4 +257,5 @@ public class SalesActivity extends AppCompatActivity {
             }
         });
     }
+
 }
