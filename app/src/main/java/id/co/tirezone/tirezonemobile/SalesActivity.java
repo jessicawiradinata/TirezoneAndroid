@@ -68,11 +68,12 @@ public class SalesActivity extends AppCompatActivity {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(final SalesViewHolder viewHolder, Sales model, int position) {
+            protected void populateViewHolder(final SalesViewHolder viewHolder, Sales model, final int position) {
                 viewHolder.setInvoiceNo(model.getInvoiceno());
                 viewHolder.setDate(model.getDate());
+                viewHolder.setButton();
 
-                String cartKey = model.getCartkey();
+                final String cartKey = model.getCartkey();
                 DatabaseReference cartsRef = FirebaseDatabase.getInstance().getReference()
                         .child("carts").child(cartKey).child("totalprice");
                 cartsRef.addValueEventListener(new ValueEventListener() {
@@ -87,7 +88,7 @@ public class SalesActivity extends AppCompatActivity {
                     }
                 });
 
-                String customerKey = model.getCustomerkey();
+                final String customerKey = model.getCustomerkey();
                 DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference()
                         .child("users").child(userId).child("customers").child(customerKey).child("vehicleid");
                 customerRef.addValueEventListener(new ValueEventListener() {
@@ -99,6 +100,17 @@ public class SalesActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
+                    }
+                });
+
+                viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(SalesActivity.this, TransactionDetailsActivity.class);
+                        intent.putExtra("customerKey", customerKey);
+                        intent.putExtra("cartKey", cartKey);
+                        intent.putExtra("salesKey", getRef(position).getKey());
+                        startActivity(intent);
                     }
                 });
             }
@@ -179,7 +191,7 @@ public class SalesActivity extends AppCompatActivity {
         }
 
         public void setButton() {
-            detailButton = (View) mView.findViewById(R.id.item_sales);
+            detailButton = mView.findViewById(R.id.item_sales);
         }
     }
 
