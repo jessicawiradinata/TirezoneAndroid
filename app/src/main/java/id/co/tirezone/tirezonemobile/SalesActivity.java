@@ -107,8 +107,6 @@ public class SalesActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(SalesActivity.this, TransactionDetailsActivity.class);
-                        intent.putExtra("customerKey", customerKey);
-                        intent.putExtra("cartKey", cartKey);
                         intent.putExtra("salesKey", getRef(position).getKey());
                         startActivity(intent);
                     }
