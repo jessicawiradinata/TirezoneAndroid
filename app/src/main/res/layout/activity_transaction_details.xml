@@ -131,17 +131,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
-            <include layout="@layout/item_transaction_product"></include>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/transaction_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
 
@@ -168,7 +163,8 @@
                 android:textSize="@dimen/standard_text_size"/>
 
             <TextView
-                android:layout_width="85dp"
+                android:id="@+id/total_price"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rp 000,000"
                 android:textSize="@dimen/standard_text_size"/>
