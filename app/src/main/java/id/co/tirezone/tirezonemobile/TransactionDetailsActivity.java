@@ -23,8 +23,13 @@ public class TransactionDetailsActivity extends AppCompatActivity {
     private String userId;
 
     private Firebase fSales;
+    private Firebase fCustomer;
 
     private TextView invoiceNoField;
+    private TextView nameField;
+    private TextView phoneField;
+    private TextView vehicleIdField;
+    private TextView carField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +40,30 @@ public class TransactionDetailsActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         salesKey = bundle.getString("salesKey");
+        customerKey = bundle.getString("customerKey");
+        cartKey = bundle.getString("cartKey");
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        fSales = new Firebase("https://tirezonemobile.firebaseio.com/users/" + userId + "/sales/" + salesKey);
 
+        fSales = new Firebase("https://tirezonemobile.firebaseio.com/users/" + userId + "/sales/" + salesKey);
         fSales.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, String> map = dataSnapshot.getValue(Map.class);
                 getSalesData(map);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        fCustomer = new Firebase("https://tirezonemobile.firebaseio.com/users/" + userId + "/customers/" + customerKey);
+        fCustomer.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, String> map = dataSnapshot.getValue(Map.class);
+                getCustomerData(map);
             }
 
             @Override
@@ -89,10 +110,26 @@ public class TransactionDetailsActivity extends AppCompatActivity {
 
     private void setReference() {
         invoiceNoField = (TextView) findViewById(R.id.invoice_id);
+        nameField = (TextView) findViewById(R.id.name);
+        phoneField = (TextView) findViewById(R.id.phone);
+        vehicleIdField = (TextView) findViewById(R.id.vehicle_id);
+        carField = (TextView) findViewById(R.id.car);
     }
 
     private void getSalesData(Map<String, String> map) {
         String invoiceNo = map.get("invoiceno");
         invoiceNoField.setText(invoiceNo);
+    }
+
+    private void getCustomerData(Map<String, String> map) {
+        String name = map.get("name");
+        String phone = map.get("phone");
+        String vehicleId = map.get("vehicleid");
+        String car = map.get("car");
+
+        nameField.setText(name);
+        phoneField.setText(phone);
+        vehicleIdField.setText(vehicleId);
+        carField.setText(car);
     }
 }

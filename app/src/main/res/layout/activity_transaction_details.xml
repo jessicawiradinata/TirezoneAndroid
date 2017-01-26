@@ -47,10 +47,10 @@
             android:textSize="@dimen/standard_text_size" />
 
         <TextView
-            android:id="@+id/customer_name"
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Abc"
+            android:text=""
             android:textSize="@dimen/standard_text_size"/>
 
     </LinearLayout>
@@ -69,10 +69,10 @@
             android:textSize="@dimen/standard_text_size" />
 
         <TextView
-            android:id="@+id/customer_phone"
+            android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="08121234567"
+            android:text=""
             android:textSize="@dimen/standard_text_size"/>
 
     </LinearLayout>
@@ -94,7 +94,7 @@
             android:id="@+id/vehicle_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="B 1234 AB"
+            android:text=""
             android:textSize="@dimen/standard_text_size"/>
 
     </LinearLayout>
@@ -113,10 +113,10 @@
             android:textSize="@dimen/standard_text_size" />
 
         <TextView
-            android:id="@+id/car_type"
+            android:id="@+id/car"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Audi - A4"
+            android:text=""
             android:textSize="@dimen/standard_text_size"/>
 
     </LinearLayout>
