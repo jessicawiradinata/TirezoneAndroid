@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,12 +40,15 @@ public class TransactionDetailsActivity extends AppCompatActivity {
     private RecyclerView itemsRecyclerView;
     private RecyclerView.LayoutManager itemsLayoutManager;
 
-
     private TextView invoiceNoField;
+    private TextView dateField;
     private TextView nameField;
     private TextView phoneField;
     private TextView vehicleIdField;
     private TextView carField;
+    private TextView mileageField;
+    private TextView technicianField;
+    private TextView notesField;
     private TextView totalPriceField;
 
     @Override
@@ -60,6 +64,7 @@ public class TransactionDetailsActivity extends AppCompatActivity {
         cartKey = bundle.getString("cartKey");
         Log.v("CART KEY ", cartKey);
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         itemsRecyclerView = (RecyclerView) findViewById(R.id.transaction_recyclerview);
         itemsLayoutManager = new LinearLayoutManager(this);
         itemsRecyclerView.setLayoutManager(itemsLayoutManager);
@@ -72,6 +77,8 @@ public class TransactionDetailsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, String> map = dataSnapshot.getValue(Map.class);
                 getSalesData(map);
+                Map<String, Integer> intMap = dataSnapshot.getValue(Map.class);
+                getSalesIntData(intMap);
             }
 
             @Override
@@ -116,8 +123,6 @@ public class TransactionDetailsActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(TransactionViewHolder viewHolder, Item model, int position) {
-                int count = 0;
-                Log.v("POPULATING", Integer.toString(count++));
                 viewHolder.setPattern(model.getPattern());
                 viewHolder.setSize(model.getSize());
                 viewHolder.setQty(Integer.toString(model.getQty()));
@@ -171,16 +176,31 @@ public class TransactionDetailsActivity extends AppCompatActivity {
 
     private void setReference() {
         invoiceNoField = (TextView) findViewById(R.id.invoice_id);
+        dateField = (TextView) findViewById(R.id.date);
         nameField = (TextView) findViewById(R.id.name);
         phoneField = (TextView) findViewById(R.id.phone);
         vehicleIdField = (TextView) findViewById(R.id.vehicle_id);
         carField = (TextView) findViewById(R.id.car);
+        mileageField = (TextView) findViewById(R.id.mileage);
+        technicianField = (TextView) findViewById(R.id.technician);
+        notesField = (TextView) findViewById(R.id.notes);
         totalPriceField = (TextView) findViewById(R.id.total_price);
     }
 
     private void getSalesData(Map<String, String> map) {
         String invoiceNo = map.get("invoiceno");
+        String date = map.get("date");
+        String technician = map.get("technician");
+        String notes = map.get("notes");
         invoiceNoField.setText(invoiceNo);
+        dateField.setText(date);
+        technicianField.setText(technician);
+        notesField.setText(notes);
+    }
+
+    private void getSalesIntData(Map<String, Integer> map) {
+        String mileage = Integer.toString(map.get("mileage"));
+        mileageField.setText(mileage + " km");
     }
 
     private void getCustomerData(Map<String, String> map) {
@@ -228,4 +248,5 @@ public class TransactionDetailsActivity extends AppCompatActivity {
             price.setText("Rp " + thePrice);
         }
     }
+
 }
