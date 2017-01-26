@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -36,6 +37,8 @@ public class TransactionDetailsActivity extends AppCompatActivity {
     private Firebase fCart;
     private DatabaseReference itemsRef;
     private RecyclerView itemsRecyclerView;
+    private RecyclerView.LayoutManager itemsLayoutManager;
+
 
     private TextView invoiceNoField;
     private TextView nameField;
@@ -58,6 +61,8 @@ public class TransactionDetailsActivity extends AppCompatActivity {
         Log.v("CART KEY ", cartKey);
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         itemsRecyclerView = (RecyclerView) findViewById(R.id.transaction_recyclerview);
+        itemsLayoutManager = new LinearLayoutManager(this);
+        itemsRecyclerView.setLayoutManager(itemsLayoutManager);
         itemsRef = FirebaseDatabase.getInstance().getReference().child("carts").child(cartKey)
                 .child("items");
 
@@ -102,11 +107,6 @@ public class TransactionDetailsActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         FirebaseRecyclerAdapter<Item, TransactionViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Item, TransactionViewHolder>(
                 Item.class,
@@ -126,6 +126,12 @@ public class TransactionDetailsActivity extends AppCompatActivity {
 
         };
         itemsRecyclerView.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     @Override
