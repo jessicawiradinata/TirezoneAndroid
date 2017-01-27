@@ -6,7 +6,6 @@ package id.co.tirezone.tirezonemobile;
 
 public class Product {
     private String pattern;
-    private String name;
     private int price;
     private String size;
     private int stock;
@@ -14,9 +13,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(String pattern, String name, int price, String size, int stock) {
+    public Product(String pattern, int price, String size, int stock) {
         this.pattern = pattern;
-        this.name = name;
         this.price = price;
         this.size = size;
         this.stock = stock;
@@ -28,14 +26,6 @@ public class Product {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getPrice() {

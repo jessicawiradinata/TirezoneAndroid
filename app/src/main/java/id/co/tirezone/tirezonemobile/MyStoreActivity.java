@@ -280,7 +280,6 @@ public class MyStoreActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(final MyEventViewHolder viewHolder, Product model, int position) {
-                viewHolder.setTitle(model.getName());
                 viewHolder.setSize(model.getSize());
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setStock(model.getStock());
@@ -295,6 +294,8 @@ public class MyStoreActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String imageUrl = dataSnapshot.child("imageurl").getValue().toString();
                         viewHolder.setIcon(MyStoreActivity.this, imageUrl);
+                        String patternName = dataSnapshot.child("name").getValue().toString();
+                        viewHolder.setTitle(patternName);
                     }
 
                     @Override

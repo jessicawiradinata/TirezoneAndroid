@@ -181,7 +181,6 @@ public class AddProductActivity extends AppCompatActivity {
                         .child("users").child(userId).child("products");
                 DatabaseReference newSession = dataRef.push();
                 newSession.child("pattern").setValue(key);
-                newSession.child("name").setValue(productName);
                 newSession.child("price").setValue(price);
                 newSession.child("size").setValue(size);
                 newSession.child("stock").setValue(stock);
