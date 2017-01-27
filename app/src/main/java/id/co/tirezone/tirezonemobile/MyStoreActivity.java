@@ -54,59 +54,30 @@ public class MyStoreActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        Query query = mDatabase;
-        if(!filter.equals("")) {
-            query = mDatabase.orderByChild("size").equalTo(filter);
-            Log.v("UPDATED QUERY ", query.toString());
-        }
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, MyEventViewHolder>(
-                Product.class,
-                R.layout.item_mystore,
-                MyEventViewHolder.class,
-                query
-        ) {
-            @Override
-            protected void populateViewHolder(MyEventViewHolder viewHolder, Product model, int position) {
-                viewHolder.setTitle(model.getName());
-                viewHolder.setSize(model.getSize());
-                viewHolder.setPrice(model.getPrice());
-                viewHolder.setStock(model.getStock());
-                viewHolder.setButton();
-                final String key = model.getPattern();
-                final String link = getRef(position).getKey();
-                viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("stuff", key);
-                        Intent i = new Intent(MyStoreActivity.this, ProductDetailsActivity.class);
-                        i.putExtras(bundle);
-                        startActivity(i);
-                    }
-                });
-                viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setupAlertDialog(link);
-                    }
-                });
-                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setupDeleteDialog(link);
-                    }
-                });
-            }
-        };
-        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
+        populateData();
 
-        int total = firebaseRecyclerAdapter.getItemCount();
-        for(int i=0; i<total; i++) {
-            if (firebaseRecyclerAdapter.getItem(i).getSize() == "") {
-                // ??
-            }
-        }
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        filter = "";
+        firebaseRecyclerAdapter.cleanup();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        filter = "";
+        firebaseRecyclerAdapter.cleanup();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        filter = "";
+        firebaseRecyclerAdapter.cleanup();
     }
 
     @Override
@@ -274,13 +245,68 @@ public class MyStoreActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ListView listView = ((AlertDialog) dialog).getListView();
-                filter = listView.getItemAtPosition(which).toString();
+                String choice = listView.getItemAtPosition(which).toString();
+                if(choice.equals("All sizes")) {
+                    filter = "";
+                }
+                else {
+                    filter = choice;
+                }
                 Log.v("FILTER ", filter);
                 firebaseRecyclerAdapter.cleanup();
+                populateData();
             }
         });
 
         alertDialog.create();
         alertDialog.show();
+    }
+
+    private void populateData() {
+        Query query = mDatabase;
+        if(!filter.equals("")) {
+            query = mDatabase.orderByChild("size").equalTo(filter);
+            Log.v("UPDATED QUERY ", query.toString());
+        }
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, MyEventViewHolder>(
+                Product.class,
+                R.layout.item_mystore,
+                MyEventViewHolder.class,
+                query
+        ) {
+            @Override
+            protected void populateViewHolder(MyEventViewHolder viewHolder, Product model, int position) {
+                viewHolder.setTitle(model.getName());
+                viewHolder.setSize(model.getSize());
+                viewHolder.setPrice(model.getPrice());
+                viewHolder.setStock(model.getStock());
+                viewHolder.setButton();
+                final String key = model.getPattern();
+                final String link = getRef(position).getKey();
+                viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("stuff", key);
+                        Intent i = new Intent(MyStoreActivity.this, ProductDetailsActivity.class);
+                        i.putExtras(bundle);
+                        startActivity(i);
+                    }
+                });
+                viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setupAlertDialog(link);
+                    }
+                });
+                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setupDeleteDialog(link);
+                    }
+                });
+            }
+        };
+        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 }

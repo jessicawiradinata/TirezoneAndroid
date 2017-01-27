@@ -19,6 +19,7 @@
     </string-array>
 
     <string-array name="size_list">
+        <item>All sizes</item>
         <item>235/60 R16</item>
         <item>215/60 R16</item>
         <item>205/65 R15</item>
