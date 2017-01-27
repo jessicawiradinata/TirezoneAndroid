@@ -18,6 +18,7 @@
             android:layout_marginRight="15dp">
 
             <ImageView
+                android:id="@+id/tire_icon"
                 android:layout_width="80dp"
                 android:layout_height="100dp"
                 android:src="@drawable/tire_icon"

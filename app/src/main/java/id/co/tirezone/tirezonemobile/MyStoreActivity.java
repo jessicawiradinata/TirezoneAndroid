@@ -3,7 +3,6 @@ package id.co.tirezone.tirezonemobile;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,17 +15,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
@@ -55,7 +60,6 @@ public class MyStoreActivity extends AppCompatActivity {
         super.onStart();
 
         populateData();
-
     }
 
     @Override
@@ -93,29 +97,23 @@ public class MyStoreActivity extends AppCompatActivity {
         if (id == R.id.action_mystore) {
             startActivity(new Intent(MyStoreActivity.this, MyStoreActivity.class));
             return true;
-        }
-        else if (id == R.id.action_sales) {
+        } else if (id == R.id.action_sales) {
             startActivity(new Intent(MyStoreActivity.this, SalesActivity.class));
             return true;
-        }
-        else if (id == R.id.action_customers) {
+        } else if (id == R.id.action_customers) {
             startActivity(new Intent(MyStoreActivity.this, CustomersActivity.class));
             return true;
-        }
-        else if (id == R.id.action_profile) {
+        } else if (id == R.id.action_profile) {
             startActivity(new Intent(MyStoreActivity.this, ProfileActivity.class));
             return true;
-        }
-        else if (id == R.id.action_logout) {
+        } else if (id == R.id.action_logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MyStoreActivity.this, LoginActivity.class));
             return true;
-        }
-        else if (id == R.id.action_add) {
+        } else if (id == R.id.action_add) {
             startActivity(new Intent(MyStoreActivity.this, AddProductActivity.class));
             return true;
-        }
-        else if (id == R.id.action_filter) {
+        } else if (id == R.id.action_filter) {
             setupFilterDialog();
             return true;
         }
@@ -156,6 +154,13 @@ public class MyStoreActivity extends AppCompatActivity {
             stock.setText(stockString + " stock(s) left");
         }
 
+        public void setIcon(Context context, String imageUrl) {
+            ImageView tireIcon = (ImageView) mView.findViewById(R.id.tire_icon);
+            Glide.with(context)
+                    .load(imageUrl)
+                    .into(tireIcon);
+        }
+
         public void setButton() {
             detailButton = (Button) mView.findViewById(R.id.detail_button);
             editButton = (Button) mView.findViewById(R.id.edit_button);
@@ -170,7 +175,7 @@ public class MyStoreActivity extends AppCompatActivity {
         Context context = alertDialog.getContext();
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50,50,50,0);
+        layout.setPadding(50, 50, 50, 0);
 
         final EditText priceField = new EditText(context);
         priceField.setHint("Price");
@@ -189,11 +194,11 @@ public class MyStoreActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String price = priceField.getText().toString();
                 String stock = stockField.getText().toString();
-                if(!price.equals("")) {
+                if (!price.equals("")) {
                     int priceInt = Integer.parseInt(price);
                     mDatabase.child(link).child("price").setValue(priceInt);
                 }
-                if(!stock.equals("")) {
+                if (!stock.equals("")) {
                     int stockInt = Integer.parseInt(stock);
                     mDatabase.child(link).child("stock").setValue(stockInt);
                 }
@@ -246,10 +251,9 @@ public class MyStoreActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 ListView listView = ((AlertDialog) dialog).getListView();
                 String choice = listView.getItemAtPosition(which).toString();
-                if(choice.equals("All sizes")) {
+                if (choice.equals("All sizes")) {
                     filter = "";
-                }
-                else {
+                } else {
                     filter = choice;
                 }
                 Log.v("FILTER ", filter);
@@ -264,7 +268,7 @@ public class MyStoreActivity extends AppCompatActivity {
 
     private void populateData() {
         Query query = mDatabase;
-        if(!filter.equals("")) {
+        if (!filter.equals("")) {
             query = mDatabase.orderByChild("size").equalTo(filter);
             Log.v("UPDATED QUERY ", query.toString());
         }
@@ -275,19 +279,35 @@ public class MyStoreActivity extends AppCompatActivity {
                 query
         ) {
             @Override
-            protected void populateViewHolder(MyEventViewHolder viewHolder, Product model, int position) {
+            protected void populateViewHolder(final MyEventViewHolder viewHolder, Product model, int position) {
                 viewHolder.setTitle(model.getName());
                 viewHolder.setSize(model.getSize());
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setStock(model.getStock());
                 viewHolder.setButton();
-                final String key = model.getPattern();
+                final String patternKey = model.getPattern();
                 final String link = getRef(position).getKey();
+
+                DatabaseReference patternRef = FirebaseDatabase.getInstance().getReference()
+                        .child("patterns").child(patternKey);
+                patternRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String imageUrl = dataSnapshot.child("imageurl").getValue().toString();
+                        viewHolder.setIcon(MyStoreActivity.this, imageUrl);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("stuff", key);
+                        bundle.putString("stuff", patternKey);
                         Intent i = new Intent(MyStoreActivity.this, ProductDetailsActivity.class);
                         i.putExtras(bundle);
                         startActivity(i);
