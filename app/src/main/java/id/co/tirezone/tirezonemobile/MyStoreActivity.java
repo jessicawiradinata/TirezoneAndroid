@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import org.w3c.dom.Text;
 
@@ -32,6 +34,7 @@ public class MyStoreActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private DatabaseReference mDatabase;
+    private FirebaseRecyclerAdapter<Product, MyEventViewHolder> firebaseRecyclerAdapter;
     private String filter = "";
 
     @Override
@@ -51,11 +54,16 @@ public class MyStoreActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Product, MyEventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, MyEventViewHolder>(
+        Query query = mDatabase;
+        if(!filter.equals("")) {
+            query = mDatabase.orderByChild("size").equalTo(filter);
+            Log.v("UPDATED QUERY ", query.toString());
+        }
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, MyEventViewHolder>(
                 Product.class,
                 R.layout.item_mystore,
                 MyEventViewHolder.class,
-                mDatabase
+                query
         ) {
             @Override
             protected void populateViewHolder(MyEventViewHolder viewHolder, Product model, int position) {
@@ -91,6 +99,14 @@ public class MyStoreActivity extends AppCompatActivity {
             }
         };
         mRecyclerView.setAdapter(firebaseRecyclerAdapter);
+
+        int total = firebaseRecyclerAdapter.getItemCount();
+        for(int i=0; i<total; i++) {
+            if (firebaseRecyclerAdapter.getItem(i).getSize() == "") {
+                // ??
+            }
+        }
+
     }
 
     @Override
@@ -257,9 +273,10 @@ public class MyStoreActivity extends AppCompatActivity {
         alertDialog.setItems(R.array.size_list, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ListView sizes = ((AlertDialog) dialog).getListView();
-                Object selectedItem = sizes.getAdapter().getItem(sizes.getCheckedItemPosition());
-                filter = selectedItem.toString();
+                ListView listView = ((AlertDialog) dialog).getListView();
+                filter = listView.getItemAtPosition(which).toString();
+                Log.v("FILTER ", filter);
+                firebaseRecyclerAdapter.cleanup();
             }
         });
 
