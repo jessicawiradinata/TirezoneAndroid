@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -28,6 +30,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TextView aspectField;
     private TextView sectionField;
     private TextView speedField;
+    private ImageView imageField;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -225,11 +228,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
         aspectField = (TextView) findViewById(R.id.aspect_ratio);
         sectionField = (TextView) findViewById(R.id.section_width);
         speedField = (TextView) findViewById(R.id.speed_rating);
+        imageField = (ImageView) findViewById(R.id.tire_icon);
     }
 
     private void getData(Map<String, String> map) {
         String title = map.get("name");
         titleField.setText(title);
+        String imageUrl = map.get("imageurl");
+        Glide.with(ProductDetailsActivity.this)
+                .load(imageUrl)
+                .into(imageField);
     }
 
     private void getSpecsData(Map<String, String> map) {
