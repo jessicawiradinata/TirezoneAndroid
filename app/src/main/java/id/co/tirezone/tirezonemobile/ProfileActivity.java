@@ -1,19 +1,33 @@
 package id.co.tirezone.tirezonemobile;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -96,7 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
         phoneField = (EditText) findViewById(R.id.phone);
         addressField = (EditText) findViewById(R.id.address);
         emailField = (EditText) findViewById(R.id.email);
-        emailField.setKeyListener(null);
+        //emailField.setKeyListener(null);
     }
 
     private void getData(Map<String, String> map) {
@@ -119,18 +133,106 @@ public class ProfileActivity extends AppCompatActivity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String group = groupField.getText().toString();
-                String name = nameField.getText().toString();
-                String phone = phoneField.getText().toString();
-                String address = addressField.getText().toString();
-
-                fRoot.child("group").setValue(group);
-                fRoot.child("name").setValue(name);
-                fRoot.child("phone").setValue(phone);
-                fRoot.child("address").setValue(address);
-
-                Toast.makeText(ProfileActivity.this, "Profile updated", Toast.LENGTH_SHORT).show();
+                String currentEmail = user.getEmail();
+                String newEmail = emailField.getText().toString();
+                if(!currentEmail.equals(newEmail)) {
+                    setupLoginDialog();
+                }
+                else {
+                    submitData();
+                }
             }
         });
+    }
+
+    private void setupLoginDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ProfileActivity.this);
+        alertDialog.setCancelable(true);
+        alertDialog.setTitle("Login");
+        alertDialog.setMessage("Please login to update email");
+
+        Context context = alertDialog.getContext();
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50,0,50,0);
+
+        final EditText loginEmail = new EditText(context);
+        loginEmail.setHint("Email");
+        loginEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        layout.addView(loginEmail);
+
+        final EditText loginPassword = new EditText(context);
+        loginPassword.setHint("Password");
+        loginPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        loginPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        layout.addView(loginPassword);
+
+        alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String email = loginEmail.getText().toString();
+                String password = loginPassword.getText().toString();
+                loginUpdate(email, password);
+            }
+        });
+
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alertDialog.setView(layout);
+        alertDialog.create();
+        alertDialog.show();
+    }
+
+    private void loginUpdate(String email, String password) {
+        AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+        user.reauthenticate(credential)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        updateProfile(emailField.getText().toString());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ProfileActivity.this, "Login failed. Unable to update profile.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void submitData() {
+        String group = groupField.getText().toString();
+        String name = nameField.getText().toString();
+        String phone = phoneField.getText().toString();
+        String address = addressField.getText().toString();
+
+        fRoot.child("group").setValue(group);
+        fRoot.child("name").setValue(name);
+        fRoot.child("phone").setValue(phone);
+        fRoot.child("address").setValue(address);
+
+        Toast.makeText(ProfileActivity.this, "Profile updated", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateProfile(String newEmail) {
+        user.updateEmail(newEmail)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        submitData();
+                        Toast.makeText(ProfileActivity.this, "Profile updated.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ProfileActivity.this, "Failed to update profile.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
