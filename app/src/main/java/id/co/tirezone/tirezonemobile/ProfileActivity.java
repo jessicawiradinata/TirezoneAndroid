@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +21,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -110,7 +107,6 @@ public class ProfileActivity extends AppCompatActivity {
         phoneField = (EditText) findViewById(R.id.phone);
         addressField = (EditText) findViewById(R.id.address);
         emailField = (EditText) findViewById(R.id.email);
-        //emailField.setKeyListener(null);
     }
 
     private void getData(Map<String, String> map) {
@@ -200,7 +196,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProfileActivity.this, "Login failed. Unable to update profile.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Login failed. Profile update cancelled.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

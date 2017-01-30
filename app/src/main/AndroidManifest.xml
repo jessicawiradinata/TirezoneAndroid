@@ -20,25 +20,25 @@
         </activity>
         <activity
             android:name=".ProfileActivity"
-            android:label="Profile"></activity>
+            android:label="Profile" />
         <activity
             android:name=".MyStoreActivity"
-            android:label="My Store"></activity>
+            android:label="My Store" />
         <activity
             android:name=".AddProductActivity"
-            android:label="Add Product"></activity>
+            android:label="Add Product" />
         <activity
             android:name=".ProductDetailsActivity"
-            android:label="Product Details"></activity>
+            android:label="Product Details" />
         <activity
             android:name=".SalesActivity"
-            android:label="Sales"></activity>
+            android:label="Sales" />
         <activity
             android:name=".TransactionDetailsActivity"
             android:label="Transaction Details" />
         <activity
             android:name=".CustomersActivity"
-            android:label="Customers"></activity>
+            android:label="Customers" />
         <activity
             android:name=".AddCustomerActivity"
             android:label="Add Customer" />
@@ -47,20 +47,27 @@
             android:label="Customer Details" />
         <activity
             android:name=".TransactionActivity1"
-            android:label="New Transaction"></activity>
+            android:label="New Transaction" />
         <activity
             android:name=".TransactionActivity2"
-            android:label="New Transaction"></activity>
+            android:label="New Transaction" />
         <activity
             android:name=".TransactionActivity3"
-            android:label="New Transaction"></activity>
+            android:label="New Transaction" />
         <activity
             android:name=".TransactionActivity4"
-            android:label="New Transaction"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+            android:label="New Transaction" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:label="Change Password"></activity>
     </application>
 
 </manifest>
