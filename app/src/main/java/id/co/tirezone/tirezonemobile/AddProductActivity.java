@@ -115,10 +115,6 @@ public class AddProductActivity extends AppCompatActivity {
             startActivity(new Intent(AddProductActivity.this, LoginActivity.class));
             return true;
         }
-        else if (id == R.id.action_filter) {
-            setupFilterDialog();
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -197,22 +193,6 @@ public class AddProductActivity extends AppCompatActivity {
         });
 
         alertDialog.setView(layout);
-        alertDialog.create();
-        alertDialog.show();
-    }
-
-    private void setupFilterDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(AddProductActivity.this);
-        alertDialog.setCancelable(true);
-
-        alertDialog.setTitle("Select tire size");
-        alertDialog.setItems(R.array.size_list, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
         alertDialog.create();
         alertDialog.show();
     }

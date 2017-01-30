@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
@@ -44,6 +45,9 @@ public class SalesActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private DatabaseReference mDatabase;
     private String userId;
+    FirebaseRecyclerAdapter<Sales, SalesViewHolder> firebaseRecyclerAdapter;
+    private String filterFrom = "";
+    private String filterTo = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,61 +65,34 @@ public class SalesActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Sales, SalesViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Sales, SalesViewHolder>(
-                Sales.class,
-                R.layout.item_sales,
-                SalesViewHolder.class,
-                mDatabase
-        ) {
-            @Override
-            protected void populateViewHolder(final SalesViewHolder viewHolder, Sales model, final int position) {
-                viewHolder.setInvoiceNo(model.getInvoiceno());
-                viewHolder.setDate(model.getDate());
-                viewHolder.setButton();
+        populateData();
+    }
 
-                final String cartKey = model.getCartkey();
-                DatabaseReference cartsRef = FirebaseDatabase.getInstance().getReference()
-                        .child("carts").child(cartKey).child("totalprice");
-                cartsRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        viewHolder.setPrice(dataSnapshot.getValue().toString());
-                    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+        filterFrom = "";
+        filterTo = "";
+        firebaseRecyclerAdapter.cleanup();
+    }
 
-                    }
-                });
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-                final String customerKey = model.getCustomerkey();
-                DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference()
-                        .child("users").child(userId).child("customers").child(customerKey).child("vehicleid");
-                customerRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        viewHolder.setVehicleId(dataSnapshot.getValue().toString());
-                    }
+        filterFrom = "";
+        filterTo = "";
+        firebaseRecyclerAdapter.cleanup();
+    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+    @Override
+    protected void onPause() {
+        super.onPause();
 
-                    }
-                });
-
-                viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(SalesActivity.this, TransactionDetailsActivity.class);
-                        intent.putExtra("salesKey", getRef(position).getKey());
-                        intent.putExtra("customerKey", customerKey);
-                        intent.putExtra("cartKey", cartKey);
-                        startActivity(intent);
-                    }
-                });
-            }
-        };
-        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
+        filterFrom = "";
+        filterTo = "";
+        firebaseRecyclerAdapter.cleanup();
     }
 
     @Override
@@ -195,14 +172,73 @@ public class SalesActivity extends AppCompatActivity {
         }
     }
 
-    private void setupDetailButton() {
-        LinearLayout detailButton = (LinearLayout) findViewById(R.id.item_sales);
-        detailButton.setOnClickListener(new View.OnClickListener() {
+    private void populateData() {
+        Query query = mDatabase;
+        if(filterFrom.equals("") && !filterTo.equals("")) {
+            query = mDatabase.orderByChild("date").endAt(filterTo);
+        }
+        else if(filterTo.equals("") && !filterFrom.equals("")) {
+            query = mDatabase.orderByChild("date").startAt(filterFrom);
+        }
+        else if(!filterFrom.equals("") && !filterTo.equals("")) {
+            query = mDatabase.orderByChild("date").startAt(filterFrom).endAt(filterTo);
+        }
+
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Sales, SalesViewHolder>(
+                Sales.class,
+                R.layout.item_sales,
+                SalesViewHolder.class,
+                query
+        ) {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SalesActivity.this, TransactionDetailsActivity.class));
+            protected void populateViewHolder(final SalesViewHolder viewHolder, Sales model, final int position) {
+                viewHolder.setInvoiceNo(model.getInvoiceno());
+                viewHolder.setDate(model.getDate());
+                viewHolder.setButton();
+
+                final String cartKey = model.getCartkey();
+                DatabaseReference cartsRef = FirebaseDatabase.getInstance().getReference()
+                        .child("carts").child(cartKey).child("totalprice");
+                cartsRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        viewHolder.setPrice(dataSnapshot.getValue().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                final String customerKey = model.getCustomerkey();
+                DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference()
+                        .child("users").child(userId).child("customers").child(customerKey).child("vehicleid");
+                customerRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        viewHolder.setVehicleId(dataSnapshot.getValue().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(SalesActivity.this, TransactionDetailsActivity.class);
+                        intent.putExtra("salesKey", getRef(position).getKey());
+                        intent.putExtra("customerKey", customerKey);
+                        intent.putExtra("cartKey", cartKey);
+                        startActivity(intent);
+                    }
+                });
             }
-        });
+        };
+        mRecyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
     private void setupFilterDialog() {
@@ -231,7 +267,10 @@ public class SalesActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("Filter", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                filterFrom = dateFrom.getText().toString();
+                filterTo = dateTo.getText().toString();
+                firebaseRecyclerAdapter.cleanup();
+                populateData();
             }
         });
 

@@ -187,14 +187,6 @@
             android:text="Update"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/delete_button"
-            style="?android:textAppearanceSmall"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="Delete"
-            android:textStyle="bold" />
-
     </LinearLayout>
 
 </LinearLayout>

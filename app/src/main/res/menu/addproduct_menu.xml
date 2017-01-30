@@ -11,10 +11,4 @@
         android:title="Profile"/>
     <item android:id="@+id/action_logout"
         android:title="Log Out"/>
-    <item
-        android:id="@+id/action_filter"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        android:icon="@drawable/search_icon"
-        android:title="Filter" />
 </menu>
