@@ -17,15 +17,20 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -56,13 +61,26 @@ public class AddProductActivity extends AppCompatActivity {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(EventViewHolder viewHolder, Pattern model, int position) {
+            protected void populateViewHolder(final EventViewHolder viewHolder, Pattern model, int position) {
                 viewHolder.setTitle(model.getName());
                 viewHolder.setButton();
                 final List<String> sizeList = model.getSizes();
-                final String productName = model.getName();
 
                 final String key = getRef(position).getKey();
+
+                mDatabase.child(key).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String imageUrl = dataSnapshot.child("imageurl").getValue().toString();
+                        viewHolder.setIcon(AddProductActivity.this, imageUrl);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -73,10 +91,11 @@ public class AddProductActivity extends AppCompatActivity {
                         startActivity(i);
                     }
                 });
+
                 viewHolder.addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        setupAddDialog(sizeList, productName, key);
+                        setupAddDialog(sizeList, key);
                     }
                 });
             }
@@ -134,13 +153,20 @@ public class AddProductActivity extends AppCompatActivity {
             productName.setText(title);
         }
 
+        public void setIcon(Context context, String imageUrl) {
+            ImageView tireIcon = (ImageView) mView.findViewById(R.id.tire_icon);
+            Glide.with(context)
+                    .load(imageUrl)
+                    .into(tireIcon);
+        }
+
         public void setButton() {
             detailButton = (Button) mView.findViewById(R.id.detail_button);
             addButton = (Button) mView.findViewById(R.id.add_button);
         }
     }
 
-    private void setupAddDialog(List<String> list, final String productName, final String key) {
+    private void setupAddDialog(List<String> list, final String key) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(AddProductActivity.this);
         alertDialog.setCancelable(true);
 
@@ -197,4 +223,5 @@ public class AddProductActivity extends AppCompatActivity {
         alertDialog.show();
     }
 }
+
 
