@@ -30,6 +30,7 @@ public class TransactionActivity4 extends AppCompatActivity {
     private EditText notesField;
     private EditText technicianField;
     private EditText dateField;
+    private Long dateLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,7 @@ public class TransactionActivity4 extends AppCompatActivity {
                 newSession.child("customerkey").setValue(customerKey);
                 newSession.child("notes").setValue(notes);
                 newSession.child("technician").setValue(technician);
-                newSession.child("date").setValue(date);
+                newSession.child("date").setValue(dateLong);
 
                 DatabaseReference newCart = FirebaseDatabase.getInstance().getReference().child("carts").push();
                 newCart.child("totalprice").setValue(mCart.getTotalPrice());
@@ -151,6 +152,7 @@ public class TransactionActivity4 extends AppCompatActivity {
                         String dateFormat = "dd/MM/yyyy";
                         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
                         dateField.setText(sdf.format(mCurrentDate.getTime()));
+                        dateLong = mCurrentDate.getTimeInMillis();
                     }
                 }, mYear, mMonth, mDay);
                 mDatePicker.show();

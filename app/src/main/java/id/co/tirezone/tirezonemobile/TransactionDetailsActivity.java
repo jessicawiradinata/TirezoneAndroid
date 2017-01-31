@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class TransactionDetailsActivity extends AppCompatActivity {
@@ -80,6 +82,8 @@ public class TransactionDetailsActivity extends AppCompatActivity {
                 getSalesData(map);
                 Map<String, Integer> intMap = dataSnapshot.getValue(Map.class);
                 getSalesIntData(intMap);
+                Map<String, Long> longMap = dataSnapshot.getValue(Map.class);
+                getSalesLongData(longMap);
             }
 
             @Override
@@ -190,13 +194,19 @@ public class TransactionDetailsActivity extends AppCompatActivity {
 
     private void getSalesData(Map<String, String> map) {
         String invoiceNo = map.get("invoiceno");
-        String date = map.get("date");
         String technician = map.get("technician");
         String notes = map.get("notes");
         invoiceNoField.setText(invoiceNo);
-        dateField.setText(date);
         technicianField.setText(technician);
         notesField.setText(notes);
+    }
+
+    private void getSalesLongData(Map<String, Long> map) {
+        Long date = map.get("date");
+        Date newDate = new Date(date);
+        String dateFormat = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        dateField.setText(sdf.format(newDate));
     }
 
     private void getSalesIntData(Map<String, Integer> map) {

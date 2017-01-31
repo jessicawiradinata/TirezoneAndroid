@@ -39,6 +39,7 @@ import org.w3c.dom.Text;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -48,8 +49,8 @@ public class SalesActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private String userId;
     FirebaseRecyclerAdapter<Sales, SalesViewHolder> firebaseRecyclerAdapter;
-    private String filterFrom = "";
-    private String filterTo = "";
+    private Long filterFrom;
+    private Long filterTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +75,8 @@ public class SalesActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        filterFrom = "";
-        filterTo = "";
+        filterFrom = null;
+        filterTo = null;
         firebaseRecyclerAdapter.cleanup();
     }
 
@@ -83,8 +84,8 @@ public class SalesActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        filterFrom = "";
-        filterTo = "";
+        filterFrom = null;
+        filterTo = null;
         firebaseRecyclerAdapter.cleanup();
     }
 
@@ -92,8 +93,8 @@ public class SalesActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        filterFrom = "";
-        filterTo = "";
+        filterFrom = null;
+        filterTo = null;
         firebaseRecyclerAdapter.cleanup();
     }
 
@@ -154,9 +155,12 @@ public class SalesActivity extends AppCompatActivity {
             invoiceNo.setText(num);
         }
 
-        public void setDate(String theDate) {
+        public void setDate(Long theDate) {
             TextView date = (TextView) mView.findViewById(R.id.date);
-            date.setText(theDate);
+            Date newDate = new Date(theDate);
+            String dateFormat = "dd/MM/yyyy";
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            date.setText(sdf.format(newDate));
         }
 
         public void setPrice(String thePrice) {
@@ -178,13 +182,13 @@ public class SalesActivity extends AppCompatActivity {
 
     private void populateData() {
         Query query = mDatabase.orderByChild("date");
-        if(filterFrom.equals("") && !filterTo.equals("")) {
+        if(filterFrom == null && filterTo != null) {
             query = mDatabase.orderByChild("date").endAt(filterTo);
         }
-        else if(filterTo.equals("") && !filterFrom.equals("")) {
+        else if(filterTo == null && filterFrom != null) {
             query = mDatabase.orderByChild("date").startAt(filterFrom);
         }
-        else if(!filterFrom.equals("") && !filterTo.equals("")) {
+        else if(filterFrom != null && filterTo != null) {
             query = mDatabase.orderByChild("date").startAt(filterFrom).endAt(filterTo);
         }
 
@@ -262,20 +266,18 @@ public class SalesActivity extends AppCompatActivity {
         dateFrom.setInputType(InputType.TYPE_CLASS_DATETIME);
         dateFrom.setFocusable(false);
         layout.addView(dateFrom);
-        setupDatePicker(dateFrom);
+        setupDatePickerFrom(dateFrom);
 
         final EditText dateTo = new EditText(context);
         dateTo.setHint("Date (to)");
         dateTo.setInputType(InputType.TYPE_CLASS_DATETIME);
         dateTo.setFocusable(false);
         layout.addView(dateTo);
-        setupDatePicker(dateTo);
+        setupDatePickerTo(dateTo);
 
         alertDialog.setPositiveButton("Filter", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                filterFrom = dateFrom.getText().toString();
-                filterTo = dateTo.getText().toString();
                 firebaseRecyclerAdapter.cleanup();
                 populateData();
             }
@@ -293,7 +295,8 @@ public class SalesActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void setupDatePicker(final EditText editText) {
+    private void setupDatePickerFrom(final EditText editText) {
+        filterFrom = null;
         final Calendar myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -304,6 +307,32 @@ public class SalesActivity extends AppCompatActivity {
                 String myFormat = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
                 editText.setText(sdf.format(myCalendar.getTime()));
+                filterFrom = myCalendar.getTimeInMillis();
+            }
+        };
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(SalesActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+    }
+
+    private void setupDatePickerTo(final EditText editText) {
+        filterTo = null;
+        final Calendar myCalendar = Calendar.getInstance();
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, month);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                String myFormat = "dd/MM/yyyy";
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                editText.setText(sdf.format(myCalendar.getTime()));
+                filterTo = myCalendar.getTimeInMillis();
             }
         };
         editText.setOnClickListener(new View.OnClickListener() {

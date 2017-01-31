@@ -6,7 +6,7 @@ package id.co.tirezone.tirezonemobile;
 
 public class Sales {
     private String invoiceno;
-    private String date;
+    private Long date;
     private String notes;
     private String technician;
     private int mileage;
@@ -16,7 +16,7 @@ public class Sales {
     public Sales() {
     }
 
-    public Sales(String invoiceno, String date, String notes, String technician, int mileage, String cartkey, String customerkey) {
+    public Sales(String invoiceno, Long date, String notes, String technician, int mileage, String cartkey, String customerkey) {
         this.invoiceno = invoiceno;
         this.date = date;
         this.notes = notes;
@@ -34,11 +34,11 @@ public class Sales {
         this.invoiceno = invoiceno;
     }
 
-    public String getDate() {
+    public Long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 
