@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +40,41 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         setReference();
         setupUpdateButton();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_mystore) {
+            startActivity(new Intent(ChangePasswordActivity.this, MyStoreActivity.class));
+            return true;
+        }
+        else if (id == R.id.action_sales) {
+            startActivity(new Intent(ChangePasswordActivity.this, SalesActivity.class));
+            return true;
+        }
+        else if (id == R.id.action_customers) {
+            startActivity(new Intent(ChangePasswordActivity.this, CustomersActivity.class));
+            return true;
+        }
+        else if (id == R.id.action_profile) {
+            startActivity(new Intent(ChangePasswordActivity.this, ProfileActivity.class));
+            return true;
+        }
+        else if (id == R.id.action_logout) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(ChangePasswordActivity.this, LoginActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void setReference() {
