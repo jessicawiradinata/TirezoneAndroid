@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -199,6 +201,11 @@ public class TransactionDetailsActivity extends AppCompatActivity {
         invoiceNoField.setText(invoiceNo);
         technicianField.setText(technician);
         notesField.setText(notes);
+
+        RelativeLayout rLayout = (RelativeLayout) findViewById(R.id.progress_layout);
+        ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+        spinner.setVisibility(View.GONE);
+        rLayout.setVisibility(View.GONE);
     }
 
     private void getSalesLongData(Map<String, Long> map) {
