@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,6 +31,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private EditText newPasswordField;
     private EditText confirmPasswordField;
     private FirebaseUser user;
+    ProgressBar buttonProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         currentPasswordField = (EditText) findViewById(R.id.current_password);
         newPasswordField = (EditText) findViewById(R.id.new_password);
         confirmPasswordField = (EditText) findViewById(R.id.confirm_new_password);
+        buttonProgressBar = (ProgressBar) findViewById(R.id.button_progress_bar);
     }
 
     private void setupUpdateButton() {
@@ -89,6 +92,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonProgressBar.setVisibility(View.VISIBLE);
                 String email = user.getEmail();
                 String currentPassword = currentPasswordField.getText().toString();
                 String newPassword = newPasswordField.getText().toString();
@@ -97,6 +101,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     loginUpdate(email, currentPassword);
                 }
                 else {
+                    buttonProgressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(ChangePasswordActivity.this, "Password does not match", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -115,6 +120,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        buttonProgressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(ChangePasswordActivity.this, "Login failed. Password update cancelled.", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -126,6 +132,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        buttonProgressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(ChangePasswordActivity.this, "Password successfully updated", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(ChangePasswordActivity.this, ProfileActivity.class));
                     }
@@ -133,6 +140,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        buttonProgressBar.setVisibility(View.INVISIBLE);
                         String errorMessage = e.getMessage();
                         Toast.makeText(ChangePasswordActivity.this, "Password change failed. " + errorMessage, Toast.LENGTH_LONG).show();
                     }
