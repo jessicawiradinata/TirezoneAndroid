@@ -81,6 +81,23 @@ public class AddProductActivity extends AppCompatActivity {
                     }
                 });
 
+                mDatabase.child(key).child("specs").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String rimSize = dataSnapshot.child("rimsize").getValue().toString();
+                        String aspectRatio = dataSnapshot.child("aspectratio").getValue().toString();
+                        String sectionWidth = dataSnapshot.child("sectionwidth").getValue().toString();
+                        viewHolder.setRimSize(rimSize);
+                        viewHolder.setAspectRatio(aspectRatio);
+                        viewHolder.setSectionWidth(sectionWidth);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 viewHolder.detailButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -158,6 +175,21 @@ public class AddProductActivity extends AppCompatActivity {
             Glide.with(context)
                     .load(imageUrl)
                     .into(tireIcon);
+        }
+
+        public void setRimSize(String size) {
+            TextView rimSize = (TextView) mView.findViewById(R.id.rim_size);
+            rimSize.setText(size);
+        }
+
+        public void setAspectRatio(String ratio) {
+            TextView aspectRatio = (TextView) mView.findViewById(R.id.aspect_ratio);
+            aspectRatio.setText(ratio);
+        }
+
+        public void setSectionWidth(String width) {
+            TextView sectionWidth = (TextView) mView.findViewById(R.id.section_width);
+            sectionWidth.setText(width);
         }
 
         public void setButton() {
