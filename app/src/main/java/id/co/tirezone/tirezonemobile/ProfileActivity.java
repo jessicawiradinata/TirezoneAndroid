@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -39,6 +41,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Firebase fRoot;
     private FirebaseUser user;
+
+    ProgressBar buttonProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +112,7 @@ public class ProfileActivity extends AppCompatActivity {
         phoneField = (EditText) findViewById(R.id.phone);
         addressField = (EditText) findViewById(R.id.address);
         emailField = (EditText) findViewById(R.id.email);
+        buttonProgressBar = (ProgressBar) findViewById(R.id.button_progress_bar);
     }
 
     private void getData(Map<String, String> map) {
@@ -122,6 +127,11 @@ public class ProfileActivity extends AppCompatActivity {
         phoneField.setText(phone);
         addressField.setText(address);
         emailField.setText(email);
+
+        RelativeLayout rLayout = (RelativeLayout) findViewById(R.id.progress_layout);
+        ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+        spinner.setVisibility(View.GONE);
+        rLayout.setVisibility(View.GONE);
     }
 
     private void setupUpdateButton() {
@@ -130,6 +140,7 @@ public class ProfileActivity extends AppCompatActivity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonProgressBar.setVisibility(View.VISIBLE);
                 String currentEmail = user.getEmail();
                 String newEmail = emailField.getText().toString();
                 if(!currentEmail.equals(newEmail)) {
@@ -167,6 +178,7 @@ public class ProfileActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                buttonProgressBar.setVisibility(View.VISIBLE);
                 String email = loginEmail.getText().toString();
                 String password = loginPassword.getText().toString();
                 loginUpdate(email, password);
@@ -183,6 +195,7 @@ public class ProfileActivity extends AppCompatActivity {
         alertDialog.setView(layout);
         alertDialog.create();
         alertDialog.show();
+        buttonProgressBar.setVisibility(View.INVISIBLE);
     }
 
     private void loginUpdate(String email, String password) {
@@ -197,6 +210,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        buttonProgressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(ProfileActivity.this, "Login failed. Profile update cancelled.", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -213,6 +227,7 @@ public class ProfileActivity extends AppCompatActivity {
         fRoot.child("phone").setValue(phone);
         fRoot.child("address").setValue(address);
 
+        buttonProgressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(ProfileActivity.this, "Profile updated", Toast.LENGTH_SHORT).show();
     }
 
@@ -228,6 +243,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        buttonProgressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(ProfileActivity.this, "Failed to update profile.", Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -45,6 +46,9 @@ public class TransactionActivity1 extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(CustomersViewHolder viewHolder, Customer model, int position) {
+                ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+                spinner.setVisibility(View.GONE);
+
                 viewHolder.setVehicleId(model.getVehicleid());
                 viewHolder.setCustomerName(model.getName());
                 viewHolder.setPhoneNum(model.getPhone());

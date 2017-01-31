@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -195,6 +196,9 @@ public class SalesActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(final SalesViewHolder viewHolder, Sales model, final int position) {
+                ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+                spinner.setVisibility(View.GONE);
+
                 viewHolder.setInvoiceNo(model.getInvoiceno());
                 viewHolder.setDate(model.getDate());
                 viewHolder.setButton();

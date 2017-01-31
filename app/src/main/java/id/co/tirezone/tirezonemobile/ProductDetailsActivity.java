@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +49,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private Firebase fRoot;
     private Firebase fRoot2;
     private String link;
+
+    private int progressCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,6 +242,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
         Glide.with(ProductDetailsActivity.this)
                 .load(imageUrl)
                 .into(imageField);
+
+        RelativeLayout rLayout = (RelativeLayout) findViewById(R.id.progress_layout);
+        ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+        spinner.setVisibility(View.GONE);
+        rLayout.setVisibility(View.GONE);
     }
 
     private void getSpecsData(Map<String, String> map) {
