@@ -75,6 +75,15 @@
             android:textColor="@color/white"
             android:background="@color/colorPrimary"/>
 
+        <ProgressBar
+            android:id="@+id/button_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@android:style/Widget.ProgressBar"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:visibility="invisible"/>
+
     </LinearLayout>
 
 </LinearLayout>
