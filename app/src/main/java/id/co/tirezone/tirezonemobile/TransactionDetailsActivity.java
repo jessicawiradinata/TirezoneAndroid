@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 public class TransactionDetailsActivity extends AppCompatActivity {
@@ -216,8 +217,10 @@ public class TransactionDetailsActivity extends AppCompatActivity {
     }
 
     private void getCartData(Map<String, Integer> map) {
-        String totalPrice = Integer.toString(map.get("totalprice"));
-        totalPriceField.setText("Rp " + totalPrice);
+        int totalPrice = map.get("totalprice");
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
+        String totalPriceString = formatter.format(totalPrice);
+        totalPriceField.setText("Rp " + totalPriceString);
     }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
@@ -245,7 +248,9 @@ public class TransactionDetailsActivity extends AppCompatActivity {
 
         public void setPrice(String thePrice) {
             TextView price = (TextView) mView.findViewById(R.id.price);
-            price.setText("Rp " + thePrice);
+            DecimalFormat formatter = new DecimalFormat("#,###,###");
+            String priceString = formatter.format(Integer.parseInt(thePrice));
+            price.setText("Rp " + priceString);
         }
     }
 

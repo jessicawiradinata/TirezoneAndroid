@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -159,7 +160,9 @@ public class SalesActivity extends AppCompatActivity {
 
         public void setPrice(String thePrice) {
             TextView price = (TextView) mView.findViewById(R.id.price);
-            price.setText("Rp " + thePrice);
+            DecimalFormat formatter = new DecimalFormat("#,###,###");
+            String priceString = formatter.format(Integer.parseInt(thePrice));
+            price.setText("Rp " + priceString);
         }
 
         public void setVehicleId(String id) {

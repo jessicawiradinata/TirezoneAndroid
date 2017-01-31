@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,9 @@ public class TransactionActivity3 extends AppCompatActivity {
             TextView totalPriceField = (TextView) findViewById(R.id.total_price);
             int subTotal = intent.getExtras().getInt("subTotal");
             totalPrice += subTotal;
-            totalPriceField.setText("Rp " + Integer.toString(totalPrice));
+            DecimalFormat formatter = new DecimalFormat("#,###,###");
+            String totalPriceString = formatter.format(totalPrice);
+            totalPriceField.setText("Rp " + totalPriceString);
         }
     };
 
@@ -67,7 +70,6 @@ public class TransactionActivity3 extends AppCompatActivity {
         sizeSpinner = (Spinner) findViewById(R.id.size_spinner);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.sales_recyclerview);
-        //RecyclerViewAdapter adapter = new RecyclerViewAdapter(items, getApplication());
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(items, TransactionActivity3.this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -213,7 +215,9 @@ public class TransactionActivity3 extends AppCompatActivity {
                 adapter.insert(items.size(), newItem);
                 Log.v("CHECK ARRAY ", Integer.toString(items.size()));
                 totalPrice += subTotal;
-                totalPriceField.setText("Rp " + Integer.toString(totalPrice));
+                DecimalFormat formatter = new DecimalFormat("#,###,###");
+                String totalPriceString = formatter.format(totalPrice);
+                totalPriceField.setText("Rp " + totalPriceString);
                 Log.v("TOTAL PRICE ", Integer.toString(totalPrice));
             }
         });

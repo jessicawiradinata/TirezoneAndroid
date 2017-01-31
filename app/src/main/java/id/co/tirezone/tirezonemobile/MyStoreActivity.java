@@ -30,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+
 
 public class MyStoreActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -140,7 +142,8 @@ public class MyStoreActivity extends AppCompatActivity {
 
         public void setPrice(int thePrice) {
             TextView price = (TextView) mView.findViewById(R.id.price);
-            String priceString = Integer.toString(thePrice);
+            DecimalFormat formatter = new DecimalFormat("#,###,###");
+            String priceString = formatter.format(thePrice);
             price.setText("Rp " + priceString);
         }
 

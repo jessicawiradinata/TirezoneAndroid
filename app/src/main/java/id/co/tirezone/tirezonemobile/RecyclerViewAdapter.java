@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +46,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
         holder.name.setText(list.get(position).getPattern());
         holder.size.setText(list.get(position).getSize());
         holder.qty.setText("Qty " + Integer.toString(list.get(position).getQty()));
-        holder.price.setText("Rp " + Integer.toString(list.get(position).getSubtotal()));
+
+        int subtotal = list.get(position).getSubtotal();
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
+        String subtotalString = formatter.format(subtotal);
+        holder.price.setText("Rp " + subtotalString);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +137,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<CartViewHolder> {
             }
         });
 
-        alertDialog.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int subTotal = list.get(position).getSubtotal();
