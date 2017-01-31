@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +63,9 @@ public class AddProductActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(final EventViewHolder viewHolder, Pattern model, int position) {
+                ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+                spinner.setVisibility(View.GONE);
+
                 viewHolder.setTitle(model.getName());
                 viewHolder.setButton();
                 final List<String> sizeList = model.getSizes();

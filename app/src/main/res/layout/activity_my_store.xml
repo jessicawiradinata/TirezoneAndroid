@@ -4,7 +4,6 @@
     android:id="@+id/activity_my_store"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context="id.co.tirezone.tirezonemobile.MyStoreActivity"
     android:focusable="true"
     android:focusableInTouchMode="true">

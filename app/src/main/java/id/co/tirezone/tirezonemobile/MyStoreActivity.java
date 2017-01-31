@@ -282,6 +282,7 @@ public class MyStoreActivity extends AppCompatActivity {
             protected void populateViewHolder(final MyEventViewHolder viewHolder, Product model, int position) {
                 ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
                 spinner.setVisibility(View.GONE);
+
                 viewHolder.setSize(model.getSize());
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setStock(model.getStock());
