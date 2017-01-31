@@ -177,7 +177,7 @@ public class SalesActivity extends AppCompatActivity {
     }
 
     private void populateData() {
-        Query query = mDatabase;
+        Query query = mDatabase.orderByChild("date");
         if(filterFrom.equals("") && !filterTo.equals("")) {
             query = mDatabase.orderByChild("date").endAt(filterTo);
         }

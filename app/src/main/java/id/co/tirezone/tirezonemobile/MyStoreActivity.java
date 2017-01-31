@@ -267,7 +267,7 @@ public class MyStoreActivity extends AppCompatActivity {
     }
 
     private void populateData() {
-        Query query = mDatabase;
+        Query query = mDatabase.orderByChild("pattern");
         if (!filter.equals("")) {
             query = mDatabase.orderByChild("size").equalTo(filter);
             Log.v("UPDATED QUERY ", query.toString());

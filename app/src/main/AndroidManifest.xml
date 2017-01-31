@@ -49,9 +49,6 @@
             android:name=".TransactionActivity1"
             android:label="New Transaction" />
         <activity
-            android:name=".TransactionActivity2"
-            android:label="New Transaction" />
-        <activity
             android:name=".TransactionActivity3"
             android:label="New Transaction"
             android:windowSoftInputMode="adjustPan"/>

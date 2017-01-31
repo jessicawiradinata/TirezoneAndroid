@@ -41,7 +41,7 @@ public class CustomersActivity extends AppCompatActivity {
                 Customer.class,
                 R.layout.item_customers,
                 CustomersViewHolder.class,
-                mDatabase
+                mDatabase.orderByChild("vehicleid")
         ) {
             @Override
             protected void populateViewHolder(CustomersViewHolder viewHolder, Customer model, int position) {

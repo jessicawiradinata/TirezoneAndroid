@@ -59,7 +59,7 @@ public class AddProductActivity extends AppCompatActivity {
                 Pattern.class,
                 R.layout.item_addproduct,
                 EventViewHolder.class,
-                mDatabase
+                mDatabase.orderByChild("name")
         ) {
             @Override
             protected void populateViewHolder(final EventViewHolder viewHolder, Pattern model, int position) {
