@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
@@ -128,6 +130,11 @@ public class CustomerDetailsActivity extends AppCompatActivity {
             ArrayAdapter<String> adapter = (ArrayAdapter<String>) carSpinner.getAdapter();
             carSpinner.setSelection(adapter.getPosition(car));
         }
+
+        RelativeLayout rLayout = (RelativeLayout) findViewById(R.id.progress_layout);
+        ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+        spinner.setVisibility(View.GONE);
+        rLayout.setVisibility(View.GONE);
     }
 
     private void setupUpdateButton() {
