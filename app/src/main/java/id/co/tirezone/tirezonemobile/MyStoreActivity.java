@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -279,6 +280,8 @@ public class MyStoreActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(final MyEventViewHolder viewHolder, Product model, int position) {
+                ProgressBar spinner = (ProgressBar) findViewById(R.id.progress_bar);
+                spinner.setVisibility(View.GONE);
                 viewHolder.setSize(model.getSize());
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setStock(model.getStock());
