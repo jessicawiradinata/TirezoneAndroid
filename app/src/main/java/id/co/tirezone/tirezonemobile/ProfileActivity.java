@@ -64,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         setupUpdateButton();
+        setupPasswordButton();
     }
 
     @Override
@@ -230,5 +231,16 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Failed to update profile.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void setupPasswordButton() {
+        Button passwordButton = (Button) findViewById(R.id.password_button);
+
+        passwordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileActivity.this, ChangePasswordActivity.class));
+            }
+        });
     }
 }
